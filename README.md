@@ -1,41 +1,33 @@
-# Xanthus
+# XANTHUS
+A lightweight backend framework in Ruby.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/xanthus`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Implemented features
+### __Models__
 
-TODO: Delete this and the text above, and describe your gem
+Flexible ORM implementation with a ModelBase parent class, with dynamically generated SQL queries via a SQLite3 databse for methods like `::all`, `::find`, `::where`, and `#save`. Also included is `::parse_all`, which converts SQL results into instances of the class that inherits from ModelBase. This is achieved by utilizing metaprogramming to define get and set instance methods:
 
-## Installation
+### __Associations__
 
-Add this line to your application's Gemfile:
+`belongs_to` and `has_many` are employed to define methods that will generate the necessary SQL queries and table joins to return the appropriate associated data.
 
-```ruby
-gem 'xanthus'
-```
+### __Router and Routes__
 
-And then execute:
+Router class allows for routes to be defined, finds the route that matches the incoming request path. The matching route creates a new instance of the appropriate controller and invokes the associated action:
 
-    $ bundle
+### __Controllers__
 
-Or install it yourself as:
+ControllerBase implements `#render` and `#redirect_to` to appropriately build up HTTP response.
 
-    $ gem install xanthus
+### __Cookies__
 
-## Usage
+Both `session` and `flash` are available in the controllers, are parsed from the request, and are packaged up in the response. Both `flash` and `flash.now` are implemented.
 
-TODO: Write usage instructions here
+### __Views__
 
-## Development
+Using the `erb` gem, html.erb views can be fetched, parsed, and used to generate the HTML response. Instance variables defined in the controller are available in the view template via use of Ruby's `Kernel#binding`.
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### __Middleware__
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+`Exception` middleware catches raised errors in the app and returns an error screen response with detailed message and stack trace.
 
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/xanthus.
-
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
+`StaticAssets` middleware parses requests for assets, sets the appropriate `Content-Type` based on the file extension, reads the file, and packages it into the HTTP response.
