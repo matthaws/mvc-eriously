@@ -12,19 +12,37 @@ require "xanthus/version"
 # frozen_string_literal: true
 module Xanthus
   attr_accessor :router
-  
-  def setup_routes
-    @router = Router.instance_eval
+
+  def server(router, port = 3000)
+    app_proc = Proc.new do |env|
+      req = Rack::Request.new(env)
+      res = Rack::Response.new
+      router.run(req, res)
+      res.finish
+    end
+
+    app = Rack::Builder.new do
+      use ShowExceptions
+      use Static
+      run app_proc
+    end
+
+    Rack::Server.start(
+     app: app,
+     Port: port
+    )
   end
+
   class ControllerBase
   end
 
   class ModelBase
   end
 
-  private
   class Router
   end
+
+  private
 
   class DBConnection
   end

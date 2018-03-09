@@ -37,4 +37,10 @@ class Router
     res.status = 404
     res.write('No matching route')
   end
+
+  def create
+    self.draw Proc.new do
+
+    end
+  end
 end
